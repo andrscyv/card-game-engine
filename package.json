@@ -1,0 +1,11 @@
+{
+  "name": "card-game-engine",
+  "version": "1.0.0",
+  "description": "Js library to create socket.io based card game server",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "andrscyv@gmail.com",
+  "license": "ISC"
+}
