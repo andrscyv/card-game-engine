@@ -1,32 +1,55 @@
-const game = {
-    deck: [],
-    userCount:0,
-    init: function(){
-        this.deck = [1, 2, 3, 4, 5]
-        console.log(this.deck)
-    },
-    initUserState: function(id){
-        console.log('InitUserstate', id)
-        this.userCount++
-        return this.deck
-    },
-    ready: function(){
+const UnoDeck = require('./uno/UnoDeck')
+const moves = require('./uno/moves')
+class UnoGame {
+    constructor( numPlayers = 4 ){
+        this.deck = new UnoDeck()
+        this.players = {}
+        this.direction = 'r'
+        this.numPlayers = numPlayers
+        this.moves = moves
+    }
+    get state(){
+        return {
+            players: this.players,
+            direction: this.direction,
+            top: this.deck.topOfDiscard,
+            deck:this.deck
+        }
+    }
+    registerPlayer(id){
+        console.log('registerPlayer', id)
+        this.players[id] = {
+            turn : Object.keys(this.players).length
+        }
+    }
+    ready(){
         console.log('ready')
-        return this.userCount > 1
-    },
-    play: function( move ){
+        return Object.entries(this.players).length === this.numPlayers
+    }
+    initialState(){
+        Object.keys(this.players).forEach( playerId => {
+            let player = this.players[playerId]
+            player.hand =  this.deck.drawHand()
+            player.isMyTurn = player.turn === 0
+        })
+        this.moves.setFirstDiscard(this.state)
+        return this.state
+    }
+    play( move, args ){
         console.log('play', move)
-        this.deck.pop()
-        return this.deck
-    },
-    ended: function(){
+        moves[move](this.state, args)
+        return this.state
+
+    }
+    ended(){
         console.log('ended')
         return false
-    },
-    winner: function(){
+    }
+    winner(){
         console.log('winner')
         return null
     }
+
 }
 
-module.exports = game
+module.exports = UnoGame

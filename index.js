@@ -1,12 +1,13 @@
 const io = require('socket.io')(80)
-const game = require('./game')
+const UnoGame = require('./game')
 
-game.init()
+const game = new UnoGame()
 
 io.on('connection', function( socket ){
     console.log(socket.id)
+    game.registerPlayer(socket.id)
     io.emit('msg', {msg: 'Connected to server'})
-    socket.emit('initialState',game.initUserState(socket.id))
+    //socket.emit('initialState',game.initUserState(socket.id))
 
     if( game.ready() )
         io.emit('ready')
